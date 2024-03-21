@@ -2,8 +2,12 @@ package cs3500.NUPlanner.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.*;
 
 import cs3500.NUPlanner.controller.XmlHandler;
 import cs3500.NUPlanner.model.CentralSystem;
@@ -17,16 +21,16 @@ import cs3500.NUPlanner.view.MainSystemFrame;
 public class ScheduleController implements ActionListener {
   private CentralSystem model;
   private XmlHandler xmlHandler;
-  private MainSystemFrame view; // The view
+  private MainSystemFrame view;
+
 
   public ScheduleController(CentralSystem model, MainSystemFrame view) {
     this.model = model;
     this.view = view;
 
-    // Let the view know about the controller.
     this.view.setController(this);
 
-    //this.view.updateEventList(model.getAllEvents());
+
   }
 
   public void loadSchedulesFromXML(List<String> filePaths) {
@@ -77,17 +81,34 @@ public class ScheduleController implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    System.out.println("Action performed: " + e.getActionCommand());
+
     String command = e.getActionCommand();
-    if ("Add Event".equals(command)) {
-      // Call the method on the view to display the scheduling panel
+    if ("Load XML".equals(command)) {
+      System.out.println("Load XML command received.");
+      loadXmlFile();
+    } else if ("Save XML".equals(command)) {
+      System.out.println("Save XML command received.");
+      // saveXmlFile();
+    } else if ("Add Event".equals(command)) {
+      System.out.println("Add Event command received.");
       view.showEventSchedulingPanel();
-    } else if ("Remove Event".equals(command)) {
-      // Handle remove event button click
+    } else if ("Schedule Event".equals(command)) {
+      System.out.println("Schedule Event command received.");
     }
-    // Add any other button command checks here
   }
 
 
-
+  private void loadXmlFile() {
+    System.out.println("Preparing to show open dialog.");
+    JFileChooser fileChooser = new JFileChooser();
+    int option = fileChooser.showOpenDialog(view);
+    System.out.println("Dialog closed with option: " + option);
+    if (option == JFileChooser.APPROVE_OPTION) {
+      File selectedFile = fileChooser.getSelectedFile();
+      System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+      loadSchedulesFromXML(Collections.singletonList(selectedFile.getAbsolutePath()));
+    }
+  }
 
 }

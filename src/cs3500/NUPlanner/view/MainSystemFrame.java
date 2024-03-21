@@ -11,23 +11,27 @@ public class MainSystemFrame extends JFrame implements IViewSystemFrame {
   private JButton addEventButton;
   private JButton removeEventButton;
   private SchedulePanel schedulePanel;
-
   private EventPanel eventPanel;
+  private JMenuBar menuBar;
+  private JMenu fileMenu;
+  private JMenuItem loadMenuItem;
+  private JMenuItem saveMenuItem;
 
   public MainSystemFrame() {
     super("NUPlanner Main System");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
 
-    initializeComponents();
 
+    initializeComponents();
+    initializeMenu();
     this.setSize(800, 600);
     this.setVisible(true);
   }
 
   private void initializeComponents() {
     addEventButton = new JButton("Add Event");
-    removeEventButton = new JButton("Remove Event");
+    removeEventButton = new JButton("Schedule Event");
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(addEventButton);
@@ -38,6 +42,8 @@ public class MainSystemFrame extends JFrame implements IViewSystemFrame {
     this.add(schedulePanel, BorderLayout.CENTER);
 
     eventPanel = new EventPanel();
+
+
 
   }
 
@@ -60,6 +66,26 @@ public class MainSystemFrame extends JFrame implements IViewSystemFrame {
     eventDialog.setLocationRelativeTo(this);
     eventDialog.setVisible(true);
   }
+
+  private void initializeMenu() {
+    menuBar = new JMenuBar();
+
+    fileMenu = new JMenu("File");
+    menuBar.add(fileMenu);
+
+    loadMenuItem = new JMenuItem("Load XML");
+    saveMenuItem = new JMenuItem("Save XML");
+    fileMenu.add(loadMenuItem);
+    fileMenu.add(saveMenuItem);
+
+    this.setJMenuBar(menuBar);
+  }
+
+  public void setMenuController(ActionListener controller) {
+    loadMenuItem.addActionListener(controller);
+    saveMenuItem.addActionListener(controller);
+  }
+
 
 
 
