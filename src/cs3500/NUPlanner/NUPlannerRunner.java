@@ -7,10 +7,12 @@ import cs3500.NUPlanner.model.CentralSystem;
 public class NUPlannerRunner {
 
   public static void main(String[] args) {
-    CentralSystem centralSystem = new CentralSystem();
-    MainSystemFrame mainSystemFrame = new MainSystemFrame();
-    ScheduleController scheduleController = new ScheduleController(centralSystem, mainSystemFrame);
+    MainSystemFrame view = new MainSystemFrame();
+    CentralSystem model = new CentralSystem();
+    ScheduleController controller = new ScheduleController(model, view);
 
-    mainSystemFrame.setVisible(true);
+    view.setMenuController(controller);
+
+
   }
 }

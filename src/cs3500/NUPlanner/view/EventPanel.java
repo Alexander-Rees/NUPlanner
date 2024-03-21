@@ -16,6 +16,7 @@ public class EventPanel extends JPanel implements IViewEventPanel {
   private JList<String> usersList;
   private JButton modifyEventButton;
   private JButton removeEventButton;
+  private JButton createEventButton;
   private DefaultListModel<String> usersListModel;
 
   public EventPanel() {
@@ -38,6 +39,7 @@ public class EventPanel extends JPanel implements IViewEventPanel {
 
     modifyEventButton = new JButton("Modify event");
     removeEventButton = new JButton("Remove event");
+    createEventButton = new JButton("Create event");
 
     add(createLabelledComponent("Event name:", eventNameField));
     add(createLabelledComponent("Location:", locationField));
@@ -51,8 +53,10 @@ public class EventPanel extends JPanel implements IViewEventPanel {
     add(new JScrollPane(usersList));
 
     JPanel buttonPanel = new JPanel();
+    buttonPanel.add(createEventButton);
     buttonPanel.add(modifyEventButton);
     buttonPanel.add(removeEventButton);
+
     add(buttonPanel);
   }
 
@@ -67,6 +71,7 @@ public class EventPanel extends JPanel implements IViewEventPanel {
 
 
   public void setController(ActionListener controller) {
+    createEventButton.addActionListener(controller);
     modifyEventButton.addActionListener(controller);
     removeEventButton.addActionListener(controller);
   }
