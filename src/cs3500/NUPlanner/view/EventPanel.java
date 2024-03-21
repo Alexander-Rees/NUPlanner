@@ -10,9 +10,9 @@ public class EventPanel extends JPanel implements IViewEventPanel {
   private JTextField locationField;
   private JCheckBox isOnlineCheckBox;
   private JComboBox<String> startingDayCombo;
-  private JComboBox<String> startingTimeCombo;
+  private JTextField startingTimeCombo;
   private JComboBox<String> endingDayCombo;
-  private JComboBox<String> endingTimeCombo;
+  private JTextField endingTimeCombo;
   private JList<String> usersList;
   private JButton modifyEventButton;
   private JButton removeEventButton;
@@ -26,12 +26,11 @@ public class EventPanel extends JPanel implements IViewEventPanel {
     isOnlineCheckBox = new JCheckBox("Is online");
 
     String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-    String[] times = generateTimes();
 
     startingDayCombo = new JComboBox<>(days);
-    startingTimeCombo = new JComboBox<>(times);
+    startingTimeCombo = new JTextField(4);
     endingDayCombo = new JComboBox<>(days);
-    endingTimeCombo = new JComboBox<>(times);
+    endingTimeCombo = new JTextField(4);
 
     usersListModel = new DefaultListModel<>();
     usersList = new JList<>(usersListModel);
@@ -58,17 +57,14 @@ public class EventPanel extends JPanel implements IViewEventPanel {
   }
 
   private Component createLabelledComponent(String label, Component component) {
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    panel.add(new JLabel(label));
-    panel.add(component);
-    return panel;
+    Box box = Box.createHorizontalBox();
+    box.add(new JLabel(label));
+    box.add(Box.createHorizontalStrut(5));
+    box.add(component);
+    box.add(Box.createHorizontalGlue());
+    return box;
   }
 
-  private String[] generateTimes() {
-    // This should return an array of string representations of times throughout the day
-    // ...
-    return new String[0];
-  }
 
   public void setController(ActionListener controller) {
     modifyEventButton.addActionListener(controller);

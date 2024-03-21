@@ -14,7 +14,6 @@ public class SchedulePanel extends JPanel implements IViewSchedulePanel {
     initializeGrid();
   }
 
-  // Initialize the grid cells
   private void initializeGrid() {
     for (int row = 0; row < 6; row++) {
       for (int col = 0; col < 7; col++) {

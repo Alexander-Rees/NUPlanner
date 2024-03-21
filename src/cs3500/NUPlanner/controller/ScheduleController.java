@@ -7,6 +7,7 @@ import java.util.Map;
 
 import cs3500.NUPlanner.controller.XmlHandler;
 import cs3500.NUPlanner.model.CentralSystem;
+import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.IUser;
@@ -78,13 +79,15 @@ public class ScheduleController implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     String command = e.getActionCommand();
     if ("Add Event".equals(command)) {
-      // Assuming null indicates a new event is to be created
-      return;
+      // Call the method on the view to display the scheduling panel
+      view.showEventSchedulingPanel();
     } else if ("Remove Event".equals(command)) {
-      // Implement logic to remove an event here
-      // showEventPanel(event); // to edit an existing event if needed
+      // Handle remove event button click
     }
-    // You can add more else if blocks for other actions
+    // Add any other button command checks here
   }
+
+
+
 
 }
