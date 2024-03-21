@@ -27,7 +27,7 @@ public class MainSystemFrame extends JFrame implements IViewSystemFrame {
 
   private void initializeComponents() {
     addEventButton = new JButton("Add Event");
-    removeEventButton = new JButton("Remove Event");
+    removeEventButton = new JButton("Schedule Event");
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(addEventButton);
