@@ -14,5 +14,5 @@ public interface ReadonlyIUser {
    *
    * @return the schedule of the user.
    */
-  ISchedule getSchedule();
+  ReadonlyISchedule getSchedule();
 }

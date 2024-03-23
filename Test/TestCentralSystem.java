@@ -11,6 +11,7 @@ import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.IUser;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.User;
 
 /**
@@ -213,10 +214,10 @@ public class TestCentralSystem {
     Assert.assertNotNull(profLucia);
     Assert.assertFalse(profLucia.getSchedule().getAllEvents().isEmpty());
 
-    List<IEvent> events = profLucia.getSchedule().getAllEvents();
+    List<ReadonlyIEvent> events = profLucia.getModifiableSchedule().getAllEvents();
     Assert.assertEquals(3, events.size());
 
-    IEvent firstEvent = events.get(0);
+    ReadonlyIEvent firstEvent = events.get(0);
     Assert.assertEquals("CS3500 Morning Lecture", firstEvent.name());
     Assert.assertEquals(Day.TUESDAY, firstEvent.startDay());
     Assert.assertEquals(950, firstEvent.startTime());
@@ -253,7 +254,7 @@ public class TestCentralSystem {
    // centralSystem.loadSchedulesFromXML(filePaths);
 
     IUser profLucia = centralSystem.getUser("Prof. Lucia");
-    List<IEvent> events = profLucia.getSchedule().getAllEvents();
+    List<ReadonlyIEvent> events = profLucia.getSchedule().getAllEvents();
 
     int expectedNumberOfUniqueEvents = 3;
 

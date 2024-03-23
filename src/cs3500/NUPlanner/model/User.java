@@ -42,4 +42,9 @@ public class User implements IUser {
     this.schedule = schedule;
 
   }
+
+  @Override
+  public ISchedule getModifiableSchedule() {
+    return this.schedule;
+  }
 }

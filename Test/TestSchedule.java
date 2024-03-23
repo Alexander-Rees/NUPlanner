@@ -8,6 +8,7 @@ import java.util.List;
 import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.Schedule;
 
 /**
@@ -90,7 +91,7 @@ public class TestSchedule {
     schedule.addEvent(event1);
     schedule.addEvent(event2);
     schedule.addEvent(event3);
-    List<IEvent> events = schedule.getEventsForDay(Day.MONDAY);
+    List<ReadonlyIEvent> events = schedule.getEventsForDay(Day.MONDAY);
     Assert.assertEquals(events, schedule.getEventsForDay(Day.MONDAY));
     Assert.assertTrue(events.contains(event1));
     Assert.assertTrue(events.contains(event2));

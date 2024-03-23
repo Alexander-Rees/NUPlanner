@@ -15,6 +15,9 @@ import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.IUser;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
+import cs3500.NUPlanner.model.ReadonlyISchedule;
+import cs3500.NUPlanner.model.ReadonlyIUser;
 import cs3500.NUPlanner.model.User;
 import cs3500.NUPlanner.view.MainSystemFrame;
 
@@ -47,9 +50,9 @@ public class ScheduleController implements ActionListener {
           model.addUser(user);
         }
 
-        for (IEvent event : loadedSchedule.getAllEvents()) {
+        for (ReadonlyIEvent event : loadedSchedule.getAllEvents()) {
           try {
-            user.getSchedule().addEvent(event);
+            user.getModifiableSchedule().addEvent((IEvent) event);
           } catch (IllegalArgumentException e) {
             System.out.println("Skipping event due to conflict: " + event.name());
           }
@@ -65,7 +68,7 @@ public class ScheduleController implements ActionListener {
     IUser user = model.getUser(targetUserName);
     XmlHandler xmlHandler = new XmlHandler();
     if (user != null) {
-      ISchedule schedule = user.getSchedule();
+      ReadonlyISchedule schedule = user.getSchedule();
       String filePath = directoryPath + "/" + targetUserName + "-schedule.xml";
 
       try {
@@ -92,10 +95,32 @@ public class ScheduleController implements ActionListener {
       // saveXmlFile();
     } else if ("Add Event".equals(command)) {
       System.out.println("Add Event command received.");
-      view.showEventSchedulingPanel();
+      view.showEventSchedulingFrame();
     } else if ("Schedule Event".equals(command)) {
       System.out.println("Schedule Event command received.");
+    } switch (e.getActionCommand()) {
+      case "User Selection Changed":
+        updateUserScheduleInView();
+        break;
     }
+  }
+
+  private void updateUserScheduleInView() {
+    String selectedUser = view.getSelectedUser();
+    if (selectedUser != null && !selectedUser.equals("<none>")) {
+      ReadonlyIUser user = model.getUser(selectedUser);
+      if (user != null) {
+        List<ReadonlyIEvent> events = user.getSchedule().getAllEvents();
+        view.updateSchedule(user.getName());
+      }
+    }
+  }
+
+
+  private void updateUsersInView() {
+    List<ReadonlyIUser> users = model.getAllUsers();
+    String[] userNames = users.stream().map(ReadonlyIUser::getName).toArray(String[]::new);
+    view.setUserList(userNames);
   }
 
 
@@ -109,6 +134,7 @@ public class ScheduleController implements ActionListener {
       System.out.println("Selected file: " + selectedFile.getAbsolutePath());
       loadSchedulesFromXML(Collections.singletonList(selectedFile.getAbsolutePath()));
     }
+    updateUsersInView();
   }
 
 }

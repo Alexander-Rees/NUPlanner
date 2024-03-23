@@ -48,7 +48,7 @@ public class CentralSystem implements ICentralSystem {
   }
 
   @Override
-  public List<IUser> getAllUsers() {
+  public List<ReadonlyIUser> getAllUsers() {
     return new ArrayList<>(users.values());
   }
 
@@ -63,7 +63,7 @@ public class CentralSystem implements ICentralSystem {
     for (String participantName : event.participants()) {
       IUser participant = users.get(participantName);
       if (participant != null) {
-        participant.getSchedule().addEvent(event);
+        participant.getModifiableSchedule().addEvent(event);
       }
     }
   }
@@ -79,7 +79,7 @@ public class CentralSystem implements ICentralSystem {
     for (String participantName : oldEvent.participants()) {
       IUser participant = users.get(participantName);
       if (participant != null) {
-        participant.getSchedule().updateEvent(oldEvent, newEvent);
+        participant.getModifiableSchedule().updateEvent(oldEvent, newEvent);
       }
     }
   }
@@ -94,11 +94,11 @@ public class CentralSystem implements ICentralSystem {
       for (String participantName : event.participants()) {
         IUser participant = users.get(participantName);
         if (participant != null) {
-          participant.getSchedule().removeEvent(event);
+          participant.getModifiableSchedule().removeEvent(event);
         }
       }
     }
-    host.getSchedule().removeEvent(event);
+    host.getModifiableSchedule().removeEvent(event);
   }
 
 

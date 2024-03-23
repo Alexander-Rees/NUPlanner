@@ -1,5 +1,6 @@
 package cs3500.NUPlanner.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ReadonlyISchedule {
@@ -11,7 +12,7 @@ public interface ReadonlyISchedule {
    * @param day The day for which events are requested.
    * @return A list of events for the specified day.
    */
-  List<IEvent> getEventsForDay(Day day);
+  List<ReadonlyIEvent> getEventsForDay(Day day);
   /**
    * Checks if adding a new event would cause a conflict with existing events.
    *
@@ -26,5 +27,5 @@ public interface ReadonlyISchedule {
    *
    * @return A list of all events.
    */
-  List<IEvent> getAllEvents();
+  ArrayList<ReadonlyIEvent> getAllEvents();
 }

@@ -21,4 +21,11 @@ public interface IUser extends ReadonlyIUser {
    * @param schedule the new schedule to be associated with the user.
    */
   void setSchedule(ISchedule schedule);
+
+  /**
+   * Gets the modifiable schedule associated with the user.
+   *
+   * @return the modifiable schedule of the user.
+   */
+  ISchedule getModifiableSchedule();
 }
