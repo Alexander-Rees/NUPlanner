@@ -1,23 +1,22 @@
 package cs3500.NUPlanner.view;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 import javax.swing.*;
 
 import cs3500.NUPlanner.model.Day;
-import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 
-public class SchedulePanel extends JPanel implements IViewSchedulePanel {
+public class SchedulePanel extends JPanel {
   private JLayeredPane layeredPane;
+  private MainSystemFrame mainFrame; // Reference to MainSystemFrame for showing event details
 
   public SchedulePanel() {
-
     setLayout(new BorderLayout());
     layeredPane = new JLayeredPane();
     layeredPane.setPreferredSize(new Dimension(800, 600));
-
     this.add(layeredPane, BorderLayout.CENTER);
     initializeGrid();
   }
@@ -33,7 +32,6 @@ public class SchedulePanel extends JPanel implements IViewSchedulePanel {
         if (row % 4 == 0) {
           cellPanel.setBorder(BorderFactory.createMatteBorder(3, 1, 1, 1, Color.GRAY));
         }
-
         cellPanel.setBounds(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
         cellPanel.setOpaque(false);
         layeredPane.add(cellPanel, JLayeredPane.DEFAULT_LAYER);
@@ -41,24 +39,19 @@ public class SchedulePanel extends JPanel implements IViewSchedulePanel {
     }
   }
 
+  public void setMainFrame(MainSystemFrame mainFrame) {
+    this.mainFrame = mainFrame;
+  }
 
   public void displaySchedule(ArrayList<ReadonlyIEvent> events) {
-
     for (ReadonlyIEvent event : events) {
       addEventToSchedule(event);
     }
-
     layeredPane.revalidate();
     layeredPane.repaint();
   }
 
-
-
-
-
-
   private int convertDayToColumnIndex(Day day) {
-
     switch (day) {
       case SUNDAY: return 0;
       case MONDAY: return 1;
@@ -86,28 +79,18 @@ public class SchedulePanel extends JPanel implements IViewSchedulePanel {
       int endHourForPanel = (i == daySpan) ? event.endTime() / 100 : 24;
 
       int yPos = startHourForPanel * cellHeight;
-      int panelHeight;
-
-      if (i < daySpan) {
-        panelHeight = (24 - startHourForPanel) * cellHeight;
-      } else {
-        int startMinuteForPanel = (i == 0) ? event.startTime() % 100 : 0;
-        int endMinuteForPanel = (i == daySpan) ? event.endTime() % 100 : 0;
-        int durationInMinutesForPanel = (endHourForPanel * 60 + endMinuteForPanel) - (startHourForPanel * 60 + startMinuteForPanel);
-        panelHeight = (durationInMinutesForPanel * cellHeight) / 60;
-      }
+      int panelHeight = ((endHourForPanel - startHourForPanel) * cellHeight) - ((i < daySpan) ? 0 : (cellHeight * (60 - event.endTime() % 100) / 60));
 
       EventPanel eventPanel = new EventPanel(event);
       eventPanel.setBounds(dayIndex * cellWidth, yPos, cellWidth, panelHeight);
       layeredPane.add(eventPanel, Integer.valueOf(100));
 
+      eventPanel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          mainFrame.showEventDetails(event);
+        }
+      });
     }
   }
-
-
-
-
-
-
-
 }

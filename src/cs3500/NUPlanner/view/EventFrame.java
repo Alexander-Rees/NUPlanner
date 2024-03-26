@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+import cs3500.NUPlanner.model.ReadonlyIEvent;
+
 public class EventFrame extends JFrame implements IViewEventFrame {
   private JTextField eventNameField;
   private JTextField locationField;
@@ -80,4 +82,21 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     modifyEventButton.addActionListener(controller);
     removeEventButton.addActionListener(controller);
   }
+
+  public void populateEventDetails(ReadonlyIEvent event) {
+    eventNameField.setText(event.name());
+    locationField.setText(event.location());
+    isOnlineCheckBox.setSelected(event.online());
+    startingDayCombo.setSelectedItem(event.startDay().toString());
+    startingTimeField.setText(String.format("%04d", event.startTime()));
+    endingDayCombo.setSelectedItem(event.endDay().toString());
+    endingTimeField.setText(String.format("%04d", event.endTime()));
+
+
+    usersListModel.clear();
+    for (String user : event.participants()) {
+      usersListModel.addElement(user);
+    }
+  }
+
 }

@@ -10,6 +10,7 @@ import cs3500.NUPlanner.model.CentralSystem;
 import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.IUser;
 import cs3500.NUPlanner.model.ReadonlyICentralSystem;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.ReadonlyIUser;
 
@@ -34,6 +35,7 @@ public class MainSystemFrame extends JFrame {
     initializeMenu();
     this.setSize(800, 600);
     this.setVisible(true);
+    schedulePanel.setMainFrame(this);
   }
 
 
@@ -109,4 +111,14 @@ public class MainSystemFrame extends JFrame {
     loadMenuItem.addActionListener(controller);
     saveMenuItem.addActionListener(controller);
   }
+
+  public void showEventDetails(ReadonlyIEvent event) {
+    if (eventFrame == null) {
+      eventFrame = new EventFrame();
+    }
+    eventFrame.populateEventDetails(event);
+    eventFrame.setLocationRelativeTo(this);
+    eventFrame.setVisible(true);
+  }
+
 }
