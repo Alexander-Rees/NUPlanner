@@ -18,6 +18,7 @@ public class EventFrame extends JFrame implements IViewEventFrame {
   private DefaultListModel<String> usersListModel;
   private JButton modifyEventButton;
   private JButton removeEventButton;
+  private JButton createEventButton;
 
   public EventFrame() {
     this.setLayout(new BorderLayout(10, 10));
@@ -53,10 +54,12 @@ public class EventFrame extends JFrame implements IViewEventFrame {
 
     // Buttons panel at the bottom
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    createEventButton = new JButton("Create event");
     modifyEventButton = new JButton("Modify event");
     removeEventButton = new JButton("Remove event");
     buttonPanel.add(modifyEventButton);
     buttonPanel.add(removeEventButton);
+    buttonPanel.add(createEventButton);
 
     this.add(mainPanel, BorderLayout.CENTER);
     this.add(buttonPanel, BorderLayout.SOUTH);
@@ -81,6 +84,7 @@ public class EventFrame extends JFrame implements IViewEventFrame {
   public void setController(ActionListener controller) {
     modifyEventButton.addActionListener(controller);
     removeEventButton.addActionListener(controller);
+    createEventButton.addActionListener(controller);
   }
 
   public void populateEventDetails(ReadonlyIEvent event) {
