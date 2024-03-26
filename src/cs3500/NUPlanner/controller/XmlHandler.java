@@ -1,3 +1,4 @@
+
 package cs3500.NUPlanner.controller;
 
 import org.w3c.dom.Document;
@@ -21,6 +22,8 @@ import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.IUser;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
+import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.Schedule;
 import cs3500.NUPlanner.model.User;
 
@@ -56,13 +59,13 @@ public class XmlHandler implements IXmlHandler {
 
 
   @Override
-  public void writeSchedule(ISchedule schedule, String filePath, String userName) throws Exception {
+  public void writeSchedule(ReadonlyISchedule schedule, String filePath, String userName) throws Exception {
     try (FileWriter file = new FileWriter(filePath)) {
       file.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       file.write("<schedule id=\"" + userName + "\">\n");
 
-      List<IEvent> events = schedule.getAllEvents();
-      for (IEvent event : events) {
+      List<ReadonlyIEvent> events = schedule.getAllEvents();
+      for (ReadonlyIEvent event : events) {
         file.write("\t<event>\n");
         file.write("\t\t<name>" + event.name() + "</name>\n");
 

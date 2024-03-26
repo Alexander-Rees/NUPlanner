@@ -1,3 +1,4 @@
+
 package cs3500.NUPlanner.model;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface ReadonlyICentralSystem {
    * @param name The name of the user to retrieve.
    * @return The user with the specified name, or null if no such user exists.
    */
-  IUser getUser(String name);
+  ReadonlyIUser getUser(String name);
 
 
   /**
@@ -18,5 +19,5 @@ public interface ReadonlyICentralSystem {
    *
    * @return A list of all users.
    */
-  List<IUser> getAllUsers();
+  List<ReadonlyIUser> getAllUsers();
 }

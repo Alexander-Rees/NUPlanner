@@ -10,6 +10,7 @@ import cs3500.NUPlanner.controller.XmlHandler;
 import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
+import cs3500.NUPlanner.model.ReadonlyIEvent;
 
 class TestXmlHandler {
 
@@ -29,10 +30,10 @@ class TestXmlHandler {
 
     ISchedule schedule = (ISchedule) result.get("schedule");
 
-    List<IEvent> events = schedule.getAllEvents();
+    List<ReadonlyIEvent> events = schedule.getAllEvents();
     Assert.assertEquals(3, events.size());
 
-    IEvent firstEvent = events.get(0);
+    ReadonlyIEvent firstEvent = events.get(0);
     Assert.assertEquals("CS3500 Morning Lecture", firstEvent.name());
     Assert.assertEquals(Day.TUESDAY, firstEvent.startDay());
     Assert.assertEquals(950, firstEvent.startTime());

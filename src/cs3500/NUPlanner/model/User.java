@@ -1,3 +1,4 @@
+
 package cs3500.NUPlanner.model;
 
 import cs3500.NUPlanner.model.ISchedule;
@@ -41,5 +42,10 @@ public class User implements IUser {
   public void setSchedule(ISchedule schedule) {
     this.schedule = schedule;
 
+  }
+
+  @Override
+  public ISchedule getModifiableSchedule() {
+    return this.schedule;
   }
 }

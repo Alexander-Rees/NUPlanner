@@ -1,3 +1,4 @@
+
 package cs3500.NUPlanner.model;
 
 public interface ReadonlyIUser {
@@ -14,5 +15,5 @@ public interface ReadonlyIUser {
    *
    * @return the schedule of the user.
    */
-  ISchedule getSchedule();
+  ReadonlyISchedule getSchedule();
 }

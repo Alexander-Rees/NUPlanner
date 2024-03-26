@@ -1,3 +1,4 @@
+
 package cs3500.NUPlanner.model;
 
 import java.util.List;
@@ -74,14 +75,13 @@ public interface ICentralSystem extends ReadonlyICentralSystem {
    * @param targetUserName The name of the user whose schedule is to be written to an XML file.
    * @throws Exception if an error occurs during file writing.
    */
- // void writeScheduleToXML(String directoryPath, String targetUserName);
+  // void writeScheduleToXML(String directoryPath, String targetUserName);
 
   /**
    * Generates a textual representation of all users and their schedules within the system.
    *
    * @return A string representing the textual view of all users' schedules in the system.
    */
- // String getTextualView();
+  // String getTextualView();
 
 }
-

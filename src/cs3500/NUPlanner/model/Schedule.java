@@ -1,12 +1,9 @@
+
 package cs3500.NUPlanner.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import cs3500.NUPlanner.model.Day;
-import cs3500.NUPlanner.model.IEvent;
-import cs3500.NUPlanner.model.ISchedule;
 
 
 /**
@@ -62,7 +59,7 @@ public class Schedule implements ISchedule {
 
 
   @Override
-  public List<IEvent> getEventsForDay(Day day) {
+  public List<ReadonlyIEvent> getEventsForDay(Day day) {
     if (day == null) {
       return new ArrayList<>();
     }
@@ -82,7 +79,7 @@ public class Schedule implements ISchedule {
 
 
   @Override
-  public List<IEvent> getAllEvents() {
+  public ArrayList<ReadonlyIEvent> getAllEvents() {
     return new ArrayList<>(events);
   }
 
@@ -122,4 +119,3 @@ public class Schedule implements ISchedule {
   }
 
 }
-

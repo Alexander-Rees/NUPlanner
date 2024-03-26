@@ -1,8 +1,10 @@
+
 package cs3500.NUPlanner.controller;
 
 import java.util.Map;
 
 import cs3500.NUPlanner.model.ISchedule;
+import cs3500.NUPlanner.model.ReadonlyISchedule;
 
 /**
  * Represents the xml handler.
@@ -27,7 +29,7 @@ public interface IXmlHandler {
    * @param userName the name of the user that the schedule belongs to.
    * @throws Exception if an error occurs during the writing process.
    */
-  void writeSchedule(ISchedule schedule, String filePath, String userName) throws Exception;
+  void writeSchedule(ReadonlyISchedule schedule, String filePath, String userName) throws Exception;
 
 
 }

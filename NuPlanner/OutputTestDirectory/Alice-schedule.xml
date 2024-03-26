@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schedule id="Alice">
+	<event>
+		<name>Team Meeting</name>
+		<time>
+			<start-day>MONDAY</start-day>
+			<start>900</start>
+			<end-day>MONDAY</end-day>
+			<end>1000</end>
+		</time>
+		<location>
+			<online>false</online>
+			<place>Conference Room</place>
+		</location>
+		<users>
+			<uid>Alice</uid>
+			<uid>Fred</uid>
+		</users>
+	</event>
+</schedule>
