@@ -9,10 +9,18 @@ import javax.swing.*;
 import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 
-public class SchedulePanel extends JPanel {
+/**
+ * A panel that displays a schedule of events.
+ *
+ */
+public class SchedulePanel extends JPanel implements IViewEventPanel{
   private JLayeredPane layeredPane;
-  private MainSystemFrame mainFrame; // Reference to MainSystemFrame for showing event details
+  private MainSystemFrame mainFrame;
 
+  /**
+   * Sets up the layout and size of the panel and initializes the grid
+   * where the schedule will be displayed.
+   */
   public SchedulePanel() {
     setLayout(new BorderLayout());
     layeredPane = new JLayeredPane();
@@ -20,6 +28,7 @@ public class SchedulePanel extends JPanel {
     this.add(layeredPane, BorderLayout.CENTER);
     initializeGrid();
   }
+
 
   private void initializeGrid() {
     int cellWidth = layeredPane.getPreferredSize().width / 7;
@@ -44,8 +53,20 @@ public class SchedulePanel extends JPanel {
   }
 
   public void displaySchedule(ArrayList<ReadonlyIEvent> events) {
+    clearEventPanels();
     for (ReadonlyIEvent event : events) {
       addEventToSchedule(event);
+    }
+    layeredPane.revalidate();
+    layeredPane.repaint();
+  }
+
+  private void clearEventPanels() {
+    Component[] components = layeredPane.getComponents();
+    for (Component component : components) {
+      if (component instanceof EventPanel) {
+        layeredPane.remove(component);
+      }
     }
     layeredPane.revalidate();
     layeredPane.repaint();

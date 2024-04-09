@@ -2,10 +2,13 @@ package cs3500.NUPlanner.view;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
+import cs3500.NUPlanner.controller.IFeatures;
+import cs3500.NUPlanner.controller.ScheduleController;
 import cs3500.NUPlanner.model.CentralSystem;
 import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.IUser;
@@ -15,8 +18,8 @@ import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.ReadonlyIUser;
 
 public class MainSystemFrame extends JFrame {
-  private JButton addEventButton;
-  private JButton removeEventButton;
+  private JButton createEventButton;
+  private JButton scheduleEventButton;
   private SchedulePanel schedulePanel;
   private EventFrame eventFrame;
   private JMenuBar menuBar;
@@ -25,6 +28,8 @@ public class MainSystemFrame extends JFrame {
   private JMenuItem saveMenuItem;
   private JComboBox<String> userList;
   private ReadonlyICentralSystem centralSystem;
+  private IFeatures controller;
+
   public MainSystemFrame(ReadonlyICentralSystem centralSystem) {
     super("NUPlanner Main System");
     this.centralSystem = centralSystem;
@@ -40,8 +45,8 @@ public class MainSystemFrame extends JFrame {
 
 
   private void initializeComponents() {
-    addEventButton = new JButton("Add Event");
-    removeEventButton = new JButton("Schedule Event");
+    createEventButton = new JButton("Create Event");
+    scheduleEventButton = new JButton("Schedule Event");
 
     userList = new JComboBox<>();
     userList.addItem("<none>");
@@ -49,8 +54,8 @@ public class MainSystemFrame extends JFrame {
 
     JPanel bottomPanel = new JPanel(new GridLayout(1, 0, 10, 10));
     bottomPanel.add(userList);
-    bottomPanel.add(addEventButton);
-    bottomPanel.add(removeEventButton);
+    bottomPanel.add(createEventButton);
+    bottomPanel.add(scheduleEventButton);
 
     schedulePanel = new SchedulePanel();
     this.add(bottomPanel, BorderLayout.SOUTH);
@@ -59,12 +64,46 @@ public class MainSystemFrame extends JFrame {
     eventFrame = new EventFrame();
   }
 
-  public void setController(ActionListener controller) {
-    addEventButton.addActionListener(controller);
-    removeEventButton.addActionListener(controller);
-    eventFrame.setController(controller);
-    userList.addActionListener(controller);
+  public void setController(IFeatures controller) {
+    this.controller = controller;
+
+    userList.addActionListener(e -> updateUserScheduleInView());
+    createEventButton.addActionListener(e -> showEventSchedulingFrame());
+
+    scheduleEventButton.addActionListener(e -> controller.scheduleEvent());
+    loadMenuItem.addActionListener(e -> {
+      JFileChooser fileChooser = new JFileChooser();
+      int option = fileChooser.showOpenDialog(MainSystemFrame.this);
+      if (option == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        controller.loadScheduleFromXML(file.getPath());
+      }
+    });
+    saveMenuItem.addActionListener(e -> {
+      String selectedUser = getSelectedUser();
+      if (selectedUser != null && !"<none>".equals(selectedUser)) {
+        controller.saveScheduleToXML(selectedUser);
+      }
+    });
+
+
   }
+
+  public void updateUserScheduleInView() {
+    String selectedUser = getSelectedUser();
+    if (selectedUser != null && !"<none>".equals(selectedUser)) {
+      ReadonlyIUser user = centralSystem.getUser(selectedUser);
+      if (user != null) {
+        ArrayList<ReadonlyIEvent> events = user.getSchedule().getAllEvents();
+        schedulePanel.displaySchedule(events);
+      } else {
+        schedulePanel.displaySchedule(new ArrayList<>());
+      }
+    } else {
+      schedulePanel.displaySchedule(new ArrayList<>());
+    }
+  }
+
 
   public void updateSchedule(String userName) {
     ReadonlyIUser user = centralSystem.getUser(userName);
@@ -87,10 +126,16 @@ public class MainSystemFrame extends JFrame {
     return (String) userList.getSelectedItem();
   }
 
+
+
   public void showEventSchedulingFrame() {
     if (eventFrame == null) {
       eventFrame = new EventFrame();
+    } else {
+      eventFrame.resetForm();
     }
+    String currentUser = getSelectedUser();
+    eventFrame.setCurrentUser(currentUser);
     eventFrame.setLocationRelativeTo(this);
     eventFrame.setVisible(true);
   }
@@ -104,12 +149,6 @@ public class MainSystemFrame extends JFrame {
     fileMenu.add(saveMenuItem);
     menuBar.add(fileMenu);
     this.setJMenuBar(menuBar);
-  }
-
-  public void setMenuController(ActionListener controller) {
-    addEventButton.addActionListener(e -> showEventSchedulingFrame());
-    loadMenuItem.addActionListener(controller);
-    saveMenuItem.addActionListener(controller);
   }
 
   public void showEventDetails(ReadonlyIEvent event) {

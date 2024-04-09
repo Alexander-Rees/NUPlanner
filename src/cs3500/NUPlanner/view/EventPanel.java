@@ -4,10 +4,18 @@ import java.awt.*;
 import javax.swing.*;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 
+/**
+ * A panel that displays events, for us it is just a small red panel in the size
+ * of the event based on the time.
+ *
+ */
 public class EventPanel extends JPanel implements IViewEventPanel {
 
   private ReadonlyIEvent event;
 
+  /**
+   * Constructs an Event Panel with the specified event.
+   */
   public EventPanel(ReadonlyIEvent event) {
     this.event = event;
     this.setOpaque(true);
@@ -16,6 +24,9 @@ public class EventPanel extends JPanel implements IViewEventPanel {
   }
 
 
+  /**
+   * Initializes the layout and contents of this panel.
+   */
   private void initialize() {
     this.setLayout(new BorderLayout());
 

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="NUPlanner:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NUPlanner_jar</output-path>
+    <root id="archive" name="NUPlanner.jar">
+      <element id="module-output" name="NUPlanner" />
+    </root>
+  </artifact>
+</component>

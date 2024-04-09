@@ -4,6 +4,18 @@
 
 NUPlanner is a collaborative scheduling application designed to help users manage and coordinate their weekly schedules efficiently. It supports multiple users, allowing them to add events with participants, which are then incorporated into their schedules. The application facilitates schedule management through the ability to upload, modify, and download user schedules via XML files, ensuring ease of access and modification.
 
+
+## Changes for Part 2
+
+We had to make some changes based on the feedback we got from the first homework. For one, 
+we created the model, view and controller packages. We made the actual controller where we added the xml functionality as well as some interaction with the view.
+We also added all the read only interfaces and classes which made sure the view could not mutate anything.
+Other then that we already had most of the functionality.
+
+
+
+
+
 ## Quick Start
 
 To get started with NUPlanner, follow these steps:
@@ -32,7 +44,7 @@ To get started with NUPlanner, follow these steps:
 
 ## Key Components/Subcomponents
 
-### Model (`src` Directory)
+### Model (`model` Directory)
 
 - **CentralSystem**: Orchestrates user schedules and maintains event consistency across the system.
 - **Day**: Enumerates days of the week to support scheduling.
@@ -40,13 +52,45 @@ To get started with NUPlanner, follow these steps:
 - **Schedule**: Handles event management for individual users, ensuring no scheduling conflicts.
 - **User**: Represents users within the system, each with a unique schedule.
 
+
+### Controller (`controller` Directory)
+
+- **ScheduleController**: Main controller that does everything.
+- **XmlHandler**: Handles XML.
+- 
+### View (`view` Directory)
+
+- **EventFrame**: Event frame when we need an event frame.
+- **EventPanel**: Event panel for the main system.
+- **MainSystemFrame**: Main system frame for the main part of the view.
+- **SchedulePanel**: Schedule panel for the entire schedule.
+- **View**: Textual View.
+
+### NUPlannerRunner (`view` Directory)
+- **Runner**: Runs the main system with the read only model.
+
 ### Interfaces (`src` Directory)
 
 - **ICentralSystem**: Defines the central system's operations.
 - **IEvent**: Establishes the contract for event manipulation.
 - **ISchedule**: Specifies the structure for user schedule management.
 - **IUser**: Outlines expected user functionalities.
-- **IXmlHandler**: Details XML processing methods for schedules.
+- **ReadonlyICentralSystem**: Read only version of central system.
+- **ReadonlyIEvent**: Read only version of event.
+- **ReadonlyISchedule**:Read only version of schedule.
+- **IViewEventFrame**:Interface for event frame.
+- **IViewEventPanel**:Interface for event panel.
+- **IViewSchedulePanel**:Interface for schedule panel.
+- **IViewSystemFrame**:Interface for system frame.
+
+
+
+
+
+
+
+
+
 
 ### XML Handling (`src` Directory)
 

@@ -21,7 +21,7 @@ import cs3500.NUPlanner.model.ReadonlyIUser;
 import cs3500.NUPlanner.model.User;
 import cs3500.NUPlanner.view.MainSystemFrame;
 
-public class ScheduleController implements ActionListener {
+public class ScheduleController implements IFeatures {
   private CentralSystem model;
   private XmlHandler xmlHandler;
   private MainSystemFrame view;
@@ -36,31 +36,36 @@ public class ScheduleController implements ActionListener {
 
   }
 
-  public void loadSchedulesFromXML(List<String> filePaths) {
+
+
+
+
+  @Override
+  public void loadScheduleFromXML(String filePath) {
     XmlHandler xmlHandler = new XmlHandler();
-    for (String filePath : filePaths) {
-      try {
-        Map<String, Object> result = xmlHandler.readSchedule(filePath);
-        String userName = (String) result.get("userName");
-        ISchedule loadedSchedule = (ISchedule) result.get("schedule");
+    try {
+      Map<String, Object> result = xmlHandler.readSchedule(filePath);
+      String userName = (String) result.get("userName");
+      ISchedule loadedSchedule = (ISchedule) result.get("schedule");
 
-        IUser user = model.getUser(userName);
-        if (user == null) {
-          user = new User(userName);
-          model.addUser(user);
-        }
-
-        for (ReadonlyIEvent event : loadedSchedule.getAllEvents()) {
-          try {
-            user.getModifiableSchedule().addEvent((IEvent) event);
-          } catch (IllegalArgumentException e) {
-            System.out.println("Skipping event due to conflict: " + event.name());
-          }
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
+      IUser user = model.getUser(userName);
+      if (user == null) {
+        user = new User(userName);
+        model.addUser(user);
       }
+
+      for (ReadonlyIEvent event : loadedSchedule.getAllEvents()) {
+        try {
+          user.getModifiableSchedule().addEvent((IEvent) event);
+        } catch (IllegalArgumentException e) {
+          System.out.println("Skipping event due to conflict: " + event.name());
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("Failed to load schedule from XML: " + filePath);
     }
+    updateUsersInView();
   }
 
 
@@ -83,38 +88,46 @@ public class ScheduleController implements ActionListener {
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
-    System.out.println("Action performed: " + e.getActionCommand());
+  public void addEvent() {
 
-    String command = e.getActionCommand();
-    if ("Load XML".equals(command)) {
-      System.out.println("Load XML command received.");
-      loadXmlFile();
-    } else if ("Save XML".equals(command)) {
-      System.out.println("Save XML command received.");
-      // saveXmlFile();
-    } else if ("Add Event".equals(command)) {
-      System.out.println("Add Event command received.");
-      view.showEventSchedulingFrame();
-    } else if ("Schedule Event".equals(command)) {
-      System.out.println("Schedule Event command received.");
-    } switch (e.getActionCommand()) {
-      case "User Selection Changed":
-        updateUserScheduleInView();
-        break;
-    }
   }
 
-  private void updateUserScheduleInView() {
-    String selectedUser = view.getSelectedUser();
-    if (selectedUser != null && !selectedUser.equals("<none>")) {
-      ReadonlyIUser user = model.getUser(selectedUser);
-      if (user != null) {
-        List<ReadonlyIEvent> events = user.getSchedule().getAllEvents();
-        view.updateSchedule(user.getName());
+  @Override
+  public void modifyEvent(String eventId) {
+
+  }
+
+  @Override
+  public void removeEvent(String eventId) {
+
+  }
+
+
+
+  @Override
+  public void scheduleEvent() {
+
+  }
+
+  @Override
+  public void saveScheduleToXML(String selectedUser) {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    int option = fileChooser.showSaveDialog(view);
+    if (option == JFileChooser.APPROVE_OPTION) {
+      File selectedDirectory = fileChooser.getSelectedFile();
+      String directoryPath = selectedDirectory.getAbsolutePath();
+      System.out.println("Selected directory: " + directoryPath);
+      String targetUserName = view.getSelectedUser();
+      if (!"<none>".equals(targetUserName)) {
+        writeScheduleToXML(directoryPath, targetUserName);
+      } else {
+        System.out.println("No user selected.");
       }
     }
+
   }
+
 
 
   private void updateUsersInView() {
@@ -124,17 +137,5 @@ public class ScheduleController implements ActionListener {
   }
 
 
-  private void loadXmlFile() {
-    System.out.println("Preparing to show open dialog.");
-    JFileChooser fileChooser = new JFileChooser();
-    int option = fileChooser.showOpenDialog(view);
-    System.out.println("Dialog closed with option: " + option);
-    if (option == JFileChooser.APPROVE_OPTION) {
-      File selectedFile = fileChooser.getSelectedFile();
-      System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-      loadSchedulesFromXML(Collections.singletonList(selectedFile.getAbsolutePath()));
-    }
-    updateUsersInView();
-  }
 
 }

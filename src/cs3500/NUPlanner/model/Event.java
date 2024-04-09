@@ -38,9 +38,18 @@ public class Event implements IEvent {
    */
   public Event(String name, Day startDay, int startTime, Day endDay, int endTime,
                boolean online, String location, String host, List<String> participants) {
-    if ((startTime > endTime && startDay == endDay) || startTime < 0 || startTime > 2359 ||
-            endTime < 0 || endTime > 2359) {
-      throw new IllegalArgumentException("Invalid inputs");
+    int startHour = startTime / 100;
+    int startMinute = startTime % 100;
+    int endHour = endTime / 100;
+    int endMinute = endTime % 100;
+
+    boolean startTimeIsValid = startHour >= 0 && startHour <= 23 && startMinute >= 0
+            && startMinute <= 59;
+    boolean endTimeIsValid = endHour >= 0 && endHour <= 23 && endMinute >= 0 && endMinute <= 59;
+
+    if (!startTimeIsValid || !endTimeIsValid ||
+            (startDay == endDay && startTime > endTime)) {
+      throw new IllegalArgumentException("Invalid time inputs");
     }
     this.name = name;
     this.startDay = startDay;
