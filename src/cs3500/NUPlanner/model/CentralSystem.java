@@ -16,7 +16,7 @@ import cs3500.NUPlanner.model.ICentralSystem;
  */
 
 public class CentralSystem implements ICentralSystem {
-  private Map<String, IUser> users;
+  public Map<String, IUser> users;
 
   /**
    * Constructs a new cs3500.NUPlanner.model.CentralSystem with an empty list of users.
@@ -69,7 +69,7 @@ public class CentralSystem implements ICentralSystem {
   }
 
   @Override
-  public void updateEvent(String name, IEvent oldEvent, IEvent newEvent) {
+  public void updateEvent(String name, ReadonlyIEvent oldEvent, IEvent newEvent) {
     IUser user = users.get(name);
     if (user == null) {
       throw new IllegalArgumentException("cs3500.NUPlanner.model.User does not exist.");
@@ -85,7 +85,7 @@ public class CentralSystem implements ICentralSystem {
   }
 
   @Override
-  public void deleteEvent(String name, IEvent event) {
+  public void deleteEvent(String name, ReadonlyIEvent event) {
     IUser host = users.get(name);
     if (host == null) {
       throw new IllegalArgumentException("Host does not exist.");

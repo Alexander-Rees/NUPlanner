@@ -3,6 +3,8 @@ package cs3500.NUPlanner.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import javax.swing.*;
 
 import cs3500.NUPlanner.controller.XmlHandler;
 import cs3500.NUPlanner.model.CentralSystem;
+import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
@@ -31,12 +34,7 @@ public class ScheduleController implements IFeatures {
     this.model = model;
     this.view = view;
 
-    this.view.setController(this);
-
-
   }
-
-
 
 
 
@@ -88,17 +86,60 @@ public class ScheduleController implements IFeatures {
   }
 
   @Override
-  public void addEvent() {
+  public void createEvent(Map<String, String> eventDetails) {
+    try {
+      String eventName = eventDetails.get("eventName");
+      Day startDay = Day.valueOf(eventDetails.get("startDay").toUpperCase());
+      int startTime = Integer.parseInt(eventDetails.get("startTime").replace(":", ""));
+      Day endDay = Day.valueOf(eventDetails.get("endDay").toUpperCase());
+      int endTime = Integer.parseInt(eventDetails.get("endTime").replace(":", ""));
+      boolean isOnline = Boolean.parseBoolean(eventDetails.get("isOnline"));
+      String location = eventDetails.get("location");
+      String host = eventDetails.get("host");
+      List<String> participants = new ArrayList<>(Arrays.asList(eventDetails.get("participants").split(",")));
+      Event newEvent = new Event(eventName, startDay, startTime, endDay, endTime, isOnline, location, host, participants);
 
+
+      model.createEvent(view.getSelectedUser(), newEvent);
+
+      view.updateUserScheduleInView();
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
-  public void modifyEvent(String eventId) {
+  public void modifyEvent(ReadonlyIEvent oldEvent, Map<String, String> eventDetails) {
 
+    if (oldEvent == null) {
+      System.out.println("Event not found.");
+      return;
+    }
+
+
+    String eventName = eventDetails.get("eventName");
+    Day startDay = Day.valueOf(eventDetails.get("startDay").toUpperCase());
+    int startTime = Integer.parseInt(eventDetails.get("startTime").replace(":", ""));
+    Day endDay = Day.valueOf(eventDetails.get("endDay").toUpperCase());
+    int endTime = Integer.parseInt(eventDetails.get("endTime").replace(":", ""));
+    boolean isOnline = Boolean.parseBoolean(eventDetails.get("isOnline"));
+    String location = eventDetails.get("location");
+    String host = eventDetails.get("host");
+    List<String> participants = new ArrayList<>(Arrays.asList(eventDetails.get("participants").split(",")));
+    Event newEvent = new Event(eventName, startDay, startTime, endDay, endTime, isOnline, location, host, participants);
+
+
+    model.updateEvent(view.getSelectedUser(), oldEvent, newEvent);
+
+    view.updateUserScheduleInView();
   }
 
+
   @Override
-  public void removeEvent(String eventId) {
+  public void removeEvent(ReadonlyIEvent event) {
+    model.deleteEvent(view.getSelectedUser(), event);
+
+    view.updateUserScheduleInView();
 
   }
 

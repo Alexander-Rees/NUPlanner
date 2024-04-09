@@ -22,15 +22,20 @@ public class Schedule implements ISchedule {
 
   @Override
   public void addEvent(IEvent event) {
-    if (event == null || hasConflict(event)) {
-      throw new IllegalArgumentException("event can't be null or conflict");
+    if (event == null) {
+      System.out.println("event can't be null");
+      throw new IllegalArgumentException("event can't be null");
+    } else if(hasConflict(event)) {
+      System.out.println("Event has conflict");
+      throw new IllegalArgumentException("Event has conflict");
     }
     events.add(event);
+
   }
 
 
   @Override
-  public void removeEvent(IEvent event) {
+  public void removeEvent(ReadonlyIEvent event) {
     if (event == null) {
       throw new IllegalArgumentException("event can't be null");
     }
@@ -39,7 +44,7 @@ public class Schedule implements ISchedule {
 
 
   @Override
-  public void updateEvent(IEvent oldEvent, IEvent newEvent) {
+  public void updateEvent(ReadonlyIEvent oldEvent, IEvent newEvent) {
     if (oldEvent == null || newEvent == null || !events.contains(oldEvent)) {
       throw new IllegalArgumentException("Invalid events");
     }

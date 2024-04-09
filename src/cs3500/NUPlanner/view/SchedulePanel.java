@@ -42,7 +42,7 @@ public class SchedulePanel extends JPanel implements IViewEventPanel{
           cellPanel.setBorder(BorderFactory.createMatteBorder(3, 1, 1, 1, Color.GRAY));
         }
         cellPanel.setBounds(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
-        cellPanel.setOpaque(false);
+
         layeredPane.add(cellPanel, JLayeredPane.DEFAULT_LAYER);
       }
     }
@@ -97,10 +97,13 @@ public class SchedulePanel extends JPanel implements IViewEventPanel{
     for (int i = 0; i <= daySpan; i++) {
       int dayIndex = convertDayToColumnIndex(Day.values()[startDay.ordinal() + i]);
       int startHourForPanel = (i == 0) ? event.startTime() / 100 : 0;
+      int startMinuteForPanel = (i == 0) ? event.startTime() % 100 : 0;
       int endHourForPanel = (i == daySpan) ? event.endTime() / 100 : 24;
+      int endMinuteForPanel = (i == daySpan) ? event.endTime() % 100 : 0;
 
-      int yPos = startHourForPanel * cellHeight;
-      int panelHeight = ((endHourForPanel - startHourForPanel) * cellHeight) - ((i < daySpan) ? 0 : (cellHeight * (60 - event.endTime() % 100) / 60));
+      int yPos = (startHourForPanel * cellHeight) + (startMinuteForPanel * cellHeight / 60);
+      int panelHeight = ((endHourForPanel - startHourForPanel) * cellHeight)
+              + (endMinuteForPanel - startMinuteForPanel) * cellHeight / 60;
 
       EventPanel eventPanel = new EventPanel(event);
       eventPanel.setBounds(dayIndex * cellWidth, yPos, cellWidth, panelHeight);
@@ -114,4 +117,5 @@ public class SchedulePanel extends JPanel implements IViewEventPanel{
       });
     }
   }
+
 }

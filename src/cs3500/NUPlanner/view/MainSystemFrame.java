@@ -86,10 +86,15 @@ public class MainSystemFrame extends JFrame {
       }
     });
 
+    if (eventFrame != null) {
+      eventFrame.setController(controller);
+    }
+
 
   }
 
   public void updateUserScheduleInView() {
+    System.out.println("Updating view");
     String selectedUser = getSelectedUser();
     if (selectedUser != null && !"<none>".equals(selectedUser)) {
       ReadonlyIUser user = centralSystem.getUser(selectedUser);
@@ -99,8 +104,7 @@ public class MainSystemFrame extends JFrame {
       } else {
         schedulePanel.displaySchedule(new ArrayList<>());
       }
-    } else {
-      schedulePanel.displaySchedule(new ArrayList<>());
+
     }
   }
 

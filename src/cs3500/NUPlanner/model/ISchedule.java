@@ -24,7 +24,7 @@ public interface ISchedule extends ReadonlyISchedule {
    * @param event The event to be removed.
    * @throws IllegalArgumentException If the event is null.
    */
-  void removeEvent(IEvent event);
+  void removeEvent(ReadonlyIEvent event);
 
   /**
    * Updates an existing event with a new event.
@@ -33,7 +33,7 @@ public interface ISchedule extends ReadonlyISchedule {
    * @param newEvent The new event to replace the old event.
    * @throws IllegalArgumentException If either event is null or the old event does not exist.
    */
-  void updateEvent(IEvent oldEvent, IEvent newEvent);
+  void updateEvent(ReadonlyIEvent oldEvent, IEvent newEvent);
 
 
 

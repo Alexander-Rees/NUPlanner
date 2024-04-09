@@ -46,7 +46,7 @@ public interface ICentralSystem extends ReadonlyICentralSystem {
    * @param newEvent The new event to replace with.
    * @throws IllegalArgumentException If the user does not exist or the events are invalid.
    */
-  void updateEvent(String name, IEvent oldEvent, IEvent newEvent);
+  void updateEvent(String name, ReadonlyIEvent oldEvent, IEvent newEvent);
 
 
   /**
@@ -57,7 +57,7 @@ public interface ICentralSystem extends ReadonlyICentralSystem {
    * @param event The event to delete.
    * @throws IllegalArgumentException If the user does not exist or is not the host.
    */
-  void deleteEvent(String name, IEvent event);
+  void deleteEvent(String name, ReadonlyIEvent event);
 
   /**
    * Loads schedules from a list of XML files.

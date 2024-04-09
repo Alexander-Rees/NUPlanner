@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.swing.*;
 
+import cs3500.NUPlanner.controller.IFeatures;
+import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 
 public class EventFrame extends JFrame implements IViewEventFrame {
@@ -24,6 +26,10 @@ public class EventFrame extends JFrame implements IViewEventFrame {
   private JButton removeEventButton;
   private JButton createEventButton;
   private String currentUserName;
+  private IFeatures controller;
+  private JTextArea participantsTextArea;
+  private ReadonlyIEvent event;
+
 
   public EventFrame() {
     this.setLayout(new BorderLayout(10, 10));
@@ -44,9 +50,14 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     endingDayCombo = new JComboBox<>(days);
     endingTimeField = new JTextField(5);
 
-    usersListModel = new DefaultListModel<>();
-    usersList = new JList<>(usersListModel);
-    usersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+
+    participantsTextArea = new JTextArea(5, 20);
+    participantsTextArea.setLineWrap(true);
+    participantsTextArea.setWrapStyleWord(true);
+
+    JScrollPane participantsScrollPane = new JScrollPane(participantsTextArea);
+
 
     mainPanel.add(createLabelledField("Event name:", eventNameField));
     mainPanel.add(createLabelledField("Location:", locationField));
@@ -57,7 +68,8 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     mainPanel.add(createLabelledField("Ending time:", endingTimeField));
     mainPanel.add(createListWithLabel("Available users", usersList));
 
-    // Buttons panel at the bottom
+    mainPanel.add(participantsScrollPane);
+
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     createEventButton = new JButton("Create event");
     modifyEventButton = new JButton("Modify event");
@@ -70,9 +82,6 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     this.add(buttonPanel, BorderLayout.SOUTH);
     this.pack();
 
-    createEventButton.addActionListener(e -> printEventInfo("Create event"));
-    modifyEventButton.addActionListener(e -> printEventInfo("Modify event"));
-    removeEventButton.addActionListener(e -> printEventInfo("Remove event"));
   }
 
   private JPanel createLabelledField(String label, Component field) {
@@ -90,10 +99,18 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     return scrollPane;
   }
 
-  public void setController(ActionListener controller) {
-    modifyEventButton.addActionListener(controller);
-    removeEventButton.addActionListener(controller);
-    createEventButton.addActionListener(controller);
+  public void setController(IFeatures controller) {
+    this.controller = controller;
+
+    createEventButton.addActionListener(e -> {
+      controller.createEvent(getEventDetails());
+      EventFrame.this.dispose();
+    });
+    modifyEventButton.addActionListener(e -> {controller.modifyEvent(this.event, getEventDetails());
+      EventFrame.this.dispose();});
+    removeEventButton.addActionListener(e -> {controller.removeEvent(this.event);
+      EventFrame.this.dispose();} );
+
   }
 
   public void showFrame() {
@@ -108,15 +125,25 @@ public class EventFrame extends JFrame implements IViewEventFrame {
 
   public Map<String, String> getEventDetails() {
     Map<String, String> details = new HashMap<>();
-    details.put("eventName", eventNameField.getText());
-    details.put("location", locationField.getText());
+    details.put("eventName", eventNameField.getText().trim());
+    details.put("location", locationField.getText().trim());
     details.put("isOnline", String.valueOf(isOnlineCheckBox.isSelected()));
+    details.put("startDay", (String) startingDayCombo.getSelectedItem());
+    details.put("startTime", startingTimeField.getText().trim().replaceAll(":", ""));
+    details.put("endDay", (String) endingDayCombo.getSelectedItem());
+    details.put("endTime", endingTimeField.getText().trim().replaceAll(":", ""));
+    details.put("host", currentUserName);
+    String participants = participantsTextArea.getText().trim();
+    details.put("participants", participants);
     return details;
   }
 
 
 
+
+
   public void populateEventDetails(ReadonlyIEvent event) {
+    this.event = event;
     eventNameField.setText(event.name());
     locationField.setText(event.location());
     isOnlineCheckBox.setSelected(event.online());
@@ -126,11 +153,13 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     endingDayCombo.setSelectedItem(toTitleCase(event.endDay().toString()));
     endingTimeField.setText(String.format("%04d", event.endTime()));
 
-    usersListModel.clear();
-    for (String user : event.participants()) {
-      usersListModel.addElement(user);
+    StringBuilder participantsBuilder = new StringBuilder();
+    for (String participant : event.participants()) {
+      participantsBuilder.append(participant).append("\n");
     }
+    participantsTextArea.setText(participantsBuilder.toString().trim());
   }
+
 
 
   private String toTitleCase(String day) {
@@ -148,9 +177,9 @@ public class EventFrame extends JFrame implements IViewEventFrame {
     startingTimeField.setText("");
     endingDayCombo.setSelectedIndex(-1);
     endingTimeField.setText("");
-    usersListModel.clear();
   }
 
+  /**
   private void printEventInfo(String action) {
     if ("Create event".equals(action) || "Remove event".equals(action) || "Modify event".equals(action)) {
       if (isInformationMissing()) {
@@ -168,17 +197,13 @@ public class EventFrame extends JFrame implements IViewEventFrame {
 
     String hostName = currentUserName;
 
-    StringBuilder users = new StringBuilder();
-    for (int i = 0; i < usersListModel.getSize(); i++) {
-      users.append(usersListModel.getElementAt(i)).append(i < usersListModel.getSize() - 1 ? ", " : "");
-    }
 
     String eventInfo = String.format("%s: Name: %s, Host: %s, Location: %s, Is online: %s, Starting: %s %s, Ending: %s %s, Users: [%s]",
-            action, eventName, hostName, location, isOnline, startingDay, startingTime, endingDay, endingTime, users.toString());
+            action, eventName, hostName, location, isOnline, startingDay, startingTime, endingDay, endingTime);
 
     System.out.println(eventInfo);
   }
-
+*/
 
   private boolean isInformationMissing() {
     return eventNameField.getText().trim().isEmpty() ||
