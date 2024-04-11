@@ -23,10 +23,8 @@ public class Schedule implements ISchedule {
   @Override
   public void addEvent(IEvent event) {
     if (event == null) {
-      System.out.println("event can't be null");
       throw new IllegalArgumentException("event can't be null");
     } else if(hasConflict(event)) {
-      System.out.println("Event has conflict");
       throw new IllegalArgumentException("Event has conflict");
     }
     events.add(event);
@@ -86,6 +84,19 @@ public class Schedule implements ISchedule {
   public ArrayList<ReadonlyIEvent> getAllEvents() {
     return new ArrayList<>(events);
   }
+
+  @Override
+  public boolean isTimeSlotAvailable(Day startDay, int startTime, Day endDay, int endTime) {
+    IEvent proposedEvent = new Event("Pseudo", startDay, startTime, endDay, endTime, false, "PseudoLocation", "PseudoHost", new ArrayList<>());
+
+    for (IEvent existingEvent : this.events) {
+      if (isOverlapping(existingEvent, proposedEvent)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   /**
    * Determines if two events overlap by converting the time and day into minutes and comparing.

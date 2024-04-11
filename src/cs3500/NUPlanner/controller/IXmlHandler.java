@@ -2,7 +2,6 @@ package cs3500.NUPlanner.controller;
 
 import java.util.Map;
 
-import cs3500.NUPlanner.model.ISchedule;
 import cs3500.NUPlanner.model.ReadonlyISchedule;
 
 /**

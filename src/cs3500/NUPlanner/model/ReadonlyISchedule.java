@@ -28,4 +28,6 @@ public interface ReadonlyISchedule {
    * @return A list of all events.
    */
   ArrayList<ReadonlyIEvent> getAllEvents();
+
+  boolean isTimeSlotAvailable(Day startDay, int startTime, Day endDay, int endTime);
 }

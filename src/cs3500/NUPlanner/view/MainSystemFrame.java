@@ -1,23 +1,17 @@
 package cs3500.NUPlanner.view;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 import cs3500.NUPlanner.controller.IFeatures;
-import cs3500.NUPlanner.controller.ScheduleController;
-import cs3500.NUPlanner.model.CentralSystem;
-import cs3500.NUPlanner.model.ISchedule;
-import cs3500.NUPlanner.model.IUser;
 import cs3500.NUPlanner.model.ReadonlyICentralSystem;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
-import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.ReadonlyIUser;
 
-public class MainSystemFrame extends JFrame {
+public class MainSystemFrame extends JFrame implements IViewSystemFrame {
   private JButton createEventButton;
   private JButton scheduleEventButton;
   private SchedulePanel schedulePanel;
@@ -29,6 +23,7 @@ public class MainSystemFrame extends JFrame {
   private JComboBox<String> userList;
   private ReadonlyICentralSystem centralSystem;
   private IFeatures controller;
+  private SchedulingFrame scheduleFrame;
 
   public MainSystemFrame(ReadonlyICentralSystem centralSystem) {
     super("NUPlanner Main System");
@@ -64,13 +59,14 @@ public class MainSystemFrame extends JFrame {
     eventFrame = new EventFrame();
   }
 
+  @Override
   public void setController(IFeatures controller) {
     this.controller = controller;
 
     userList.addActionListener(e -> updateUserScheduleInView());
     createEventButton.addActionListener(e -> showEventSchedulingFrame());
 
-    scheduleEventButton.addActionListener(e -> controller.scheduleEvent());
+    scheduleEventButton.addActionListener(e -> showSchedulingStrategyFrame());
     loadMenuItem.addActionListener(e -> {
       JFileChooser fileChooser = new JFileChooser();
       int option = fileChooser.showOpenDialog(MainSystemFrame.this);
@@ -90,11 +86,9 @@ public class MainSystemFrame extends JFrame {
       eventFrame.setController(controller);
     }
 
-
   }
 
   public void updateUserScheduleInView() {
-    System.out.println("Updating view");
     String selectedUser = getSelectedUser();
     if (selectedUser != null && !"<none>".equals(selectedUser)) {
       ReadonlyIUser user = centralSystem.getUser(selectedUser);
@@ -109,18 +103,6 @@ public class MainSystemFrame extends JFrame {
   }
 
 
-  public void updateSchedule(String userName) {
-    ReadonlyIUser user = centralSystem.getUser(userName);
-    if (user != null) {
-      ReadonlyISchedule schedule = user.getSchedule();
-      schedulePanel.displaySchedule(schedule.getAllEvents());
-    } else {
-      schedulePanel.displaySchedule(new ArrayList<>());
-    }
-    this.revalidate();
-    this.repaint();
-  }
-
   public void setUserList(String[] userNames) {
     userList.setModel(new DefaultComboBoxModel<>(userNames));
     userList.setSelectedIndex(-1);
@@ -130,7 +112,17 @@ public class MainSystemFrame extends JFrame {
     return (String) userList.getSelectedItem();
   }
 
+  public void showSchedulingStrategyFrame() {
+    if (scheduleFrame == null) {
+      scheduleFrame = new SchedulingFrame();
+    } else {
+      scheduleFrame.resetForm();
+    }
+    scheduleFrame.setScheduleController(this.controller);
 
+    scheduleFrame.setLocationRelativeTo(this);
+    scheduleFrame.setVisible(true);
+  }
 
   public void showEventSchedulingFrame() {
     if (eventFrame == null) {

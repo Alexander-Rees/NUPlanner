@@ -5,6 +5,17 @@
 NUPlanner is a collaborative scheduling application designed to help users manage and coordinate their weekly schedules efficiently. It supports multiple users, allowing them to add events with participants, which are then incorporated into their schedules. The application facilitates schedule management through the ability to upload, modify, and download user schedules via XML files, ensuring ease of access and modification.
 
 
+## Changes for Part 3
+
+We didn't have to make too many changes to our old code. The main things
+we needed to do were add the features interface and have our controller implement it.
+Then we also added the listeners and used the frames and buttons to call
+the methods in the controller which interacted with the model. This way we seperated
+the view and model. Then we also implemented the strategies, which you can 
+select in the command line when running our main method. You can select between
+anytime and workhours. The strategies will check available times in the model and then
+and the controller adds them to the model. We also added the new scheduling frame.
+
 ## Changes for Part 2
 
 We had to make some changes based on the feedback we got from the first homework. For one, 

@@ -20,11 +20,9 @@ import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
 import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ISchedule;
-import cs3500.NUPlanner.model.IUser;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.Schedule;
-import cs3500.NUPlanner.model.User;
 
 /**
  * Handles the reading and writing of schedules and events to and from XML format.

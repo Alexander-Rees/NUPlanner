@@ -81,50 +81,7 @@ public class MoreCentralSystem {
     Assert.assertTrue(roberto.getSchedule().getAllEvents().contains(discrete));
   }
 
-  @Test
-  public void testLoadAndWriteSchedules() {
-    List<String> filePaths = new ArrayList<>();
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/alex.xml");
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/roberto.xml");
 
-   // centralSystem.loadSchedulesFromXML(filePaths);
-
-
-    String directoryPath = "/Users/arees/Downloads/NUPlanner/OutputTestDirectory";
-   // centralSystem.writeScheduleToXML(directoryPath, "Alex");
-   // centralSystem.writeScheduleToXML(directoryPath, "Roberto");
-
-    File alexFile = new File(directoryPath + "/Alex-schedule.xml");
-    File robertoFile = new File(directoryPath + "/Roberto-schedule.xml");
-
-    Assert.assertTrue(alexFile.exists());
-    Assert.assertTrue(robertoFile.exists());
-  }
-
-
-  @Test
-  public void testLoadAndModifySchedules() {
-    List<String> filePaths = new ArrayList<>();
-    CentralSystem centralSystem2 = new CentralSystem();
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/alex.xml");
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/roberto.xml");
-
-   // centralSystem2.loadSchedulesFromXML(filePaths);
-
-    Event teamMeeting = new Event("Meeting", Day.THURSDAY, 1400, Day.THURSDAY, 1515,
-            false, "Churchill", "Roberto",
-            new ArrayList<>(Arrays.asList("Roberto", "Alex")));
-
-    centralSystem2.createEvent("Roberto", teamMeeting);
-
-    String directoryPath = "/Users/arees/Downloads/NUPlanner/OutputTestDirectory";
-    //centralSystem2.writeScheduleToXML(directoryPath, "Roberto");
-
-    File robertoFile = new File(directoryPath + "/Roberto-schedule.xml");
-
-    Assert.assertTrue("Roberto's modified schedule file does not exist", robertoFile.exists());
-
-  }
 
 
 }

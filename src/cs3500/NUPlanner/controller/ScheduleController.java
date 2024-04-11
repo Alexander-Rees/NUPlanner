@@ -1,17 +1,14 @@
 package cs3500.NUPlanner.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
 
-import cs3500.NUPlanner.controller.XmlHandler;
 import cs3500.NUPlanner.model.CentralSystem;
 import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
@@ -21,6 +18,7 @@ import cs3500.NUPlanner.model.IUser;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.ReadonlyISchedule;
 import cs3500.NUPlanner.model.ReadonlyIUser;
+import cs3500.NUPlanner.model.SchedulingStrategy;
 import cs3500.NUPlanner.model.User;
 import cs3500.NUPlanner.view.MainSystemFrame;
 
@@ -28,12 +26,17 @@ public class ScheduleController implements IFeatures {
   private CentralSystem model;
   private XmlHandler xmlHandler;
   private MainSystemFrame view;
+  private SchedulingStrategy schedulingStrategy;
 
 
   public ScheduleController(CentralSystem model, MainSystemFrame view) {
     this.model = model;
     this.view = view;
 
+  }
+
+  public void setSchedulingStrategy(SchedulingStrategy schedulingStrategy) {
+    this.schedulingStrategy = schedulingStrategy;
   }
 
 
@@ -56,12 +59,12 @@ public class ScheduleController implements IFeatures {
         try {
           user.getModifiableSchedule().addEvent((IEvent) event);
         } catch (IllegalArgumentException e) {
-          System.out.println("Skipping event due to conflict: " + event.name());
+          JOptionPane.showMessageDialog(null, "Skipping event due to conflict: " + event.name(), "Event Conflict", JOptionPane.WARNING_MESSAGE);
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println("Failed to load schedule from XML: " + filePath);
+      JOptionPane.showMessageDialog(null, "Failed to load schedule from XML: " + filePath, "Loading Error", JOptionPane.ERROR_MESSAGE);
     }
     updateUsersInView();
   }
@@ -77,11 +80,10 @@ public class ScheduleController implements IFeatures {
       try {
         xmlHandler.writeSchedule(schedule, filePath, targetUserName);
       } catch (Exception e) {
-        System.out.println("Failed to write schedule for user: " + targetUserName);
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Failed to write schedule for user: " + targetUserName, "Writing Error", JOptionPane.ERROR_MESSAGE);
       }
     } else {
-      System.out.println("cs3500.NUPlanner.model.User not found: " + targetUserName);
+      JOptionPane.showMessageDialog(null, "User not found: " + targetUserName, "User Not Found", JOptionPane.ERROR_MESSAGE);
     }
   }
 
@@ -104,51 +106,68 @@ public class ScheduleController implements IFeatures {
 
       view.updateUserScheduleInView();
     } catch (IllegalArgumentException e) {
-      e.printStackTrace();
+      JOptionPane.showMessageDialog(null, "Error creating event: " + e.getMessage(), "Creation Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 
   @Override
   public void modifyEvent(ReadonlyIEvent oldEvent, Map<String, String> eventDetails) {
+    try {
+      if (oldEvent == null) {
+        JOptionPane.showMessageDialog(null, "Old event empty");
+      }
 
-    if (oldEvent == null) {
-      System.out.println("Event not found.");
-      return;
+
+      String eventName = eventDetails.get("eventName");
+      Day startDay = Day.valueOf(eventDetails.get("startDay").toUpperCase());
+      int startTime = Integer.parseInt(eventDetails.get("startTime").replace(":", ""));
+      Day endDay = Day.valueOf(eventDetails.get("endDay").toUpperCase());
+      int endTime = Integer.parseInt(eventDetails.get("endTime").replace(":", ""));
+      boolean isOnline = Boolean.parseBoolean(eventDetails.get("isOnline"));
+      String location = eventDetails.get("location");
+      String host = eventDetails.get("host");
+      List<String> participants = new ArrayList<>(Arrays.asList(eventDetails.get("participants").split(",")));
+      Event newEvent = new Event(eventName, startDay, startTime, endDay, endTime, isOnline, location, host, participants);
+
+
+      model.updateEvent(view.getSelectedUser(), oldEvent, newEvent);
+
+      view.updateUserScheduleInView();
+    } catch(IllegalArgumentException e) {
+      JOptionPane.showMessageDialog(null, "Error modifying event: " + e.getMessage(), "Modifying Error", JOptionPane.ERROR_MESSAGE);
     }
-
-
-    String eventName = eventDetails.get("eventName");
-    Day startDay = Day.valueOf(eventDetails.get("startDay").toUpperCase());
-    int startTime = Integer.parseInt(eventDetails.get("startTime").replace(":", ""));
-    Day endDay = Day.valueOf(eventDetails.get("endDay").toUpperCase());
-    int endTime = Integer.parseInt(eventDetails.get("endTime").replace(":", ""));
-    boolean isOnline = Boolean.parseBoolean(eventDetails.get("isOnline"));
-    String location = eventDetails.get("location");
-    String host = eventDetails.get("host");
-    List<String> participants = new ArrayList<>(Arrays.asList(eventDetails.get("participants").split(",")));
-    Event newEvent = new Event(eventName, startDay, startTime, endDay, endTime, isOnline, location, host, participants);
-
-
-    model.updateEvent(view.getSelectedUser(), oldEvent, newEvent);
-
-    view.updateUserScheduleInView();
   }
 
 
   @Override
   public void removeEvent(ReadonlyIEvent event) {
-    model.deleteEvent(view.getSelectedUser(), event);
+    try {
+      model.deleteEvent(view.getSelectedUser(), event);
 
-    view.updateUserScheduleInView();
+      view.updateUserScheduleInView();
+    } catch (IllegalArgumentException e) {
+      JOptionPane.showMessageDialog(null, "Error removing event: " +
+              e.getMessage(), "Removing Error", JOptionPane.ERROR_MESSAGE);
+    }
 
   }
-
-
 
   @Override
-  public void scheduleEvent() {
+  public void scheduleEvent(String name, String location, boolean isOnline, int duration, List<String> participants) {
+    try {
+       Event scheduledEvent = this.schedulingStrategy.scheduleEvent(this.model, name, location,
+              isOnline, duration, participants);
+       model.createEvent(view.getSelectedUser(), scheduledEvent);
+
+      view.updateUserScheduleInView();
+    } catch (IllegalArgumentException e) {
+      JOptionPane.showMessageDialog(null, "Error scheduling event: " +
+              e.getMessage(), "Scheduling Error", JOptionPane.ERROR_MESSAGE);
+    }
+
 
   }
+
 
   @Override
   public void saveScheduleToXML(String selectedUser) {
@@ -158,12 +177,11 @@ public class ScheduleController implements IFeatures {
     if (option == JFileChooser.APPROVE_OPTION) {
       File selectedDirectory = fileChooser.getSelectedFile();
       String directoryPath = selectedDirectory.getAbsolutePath();
-      System.out.println("Selected directory: " + directoryPath);
       String targetUserName = view.getSelectedUser();
       if (!"<none>".equals(targetUserName)) {
         writeScheduleToXML(directoryPath, targetUserName);
       } else {
-        System.out.println("No user selected.");
+        JOptionPane.showMessageDialog(null, "No User selected " + targetUserName, "User Error", JOptionPane.ERROR_MESSAGE);
       }
     }
 

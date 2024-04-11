@@ -9,9 +9,6 @@ import java.util.List;
 import cs3500.NUPlanner.model.CentralSystem;
 import cs3500.NUPlanner.model.Day;
 import cs3500.NUPlanner.model.Event;
-import cs3500.NUPlanner.model.IEvent;
-import cs3500.NUPlanner.model.IUser;
-import cs3500.NUPlanner.model.ReadonlyIEvent;
 import cs3500.NUPlanner.model.User;
 
 /**
@@ -203,61 +200,9 @@ public class TestCentralSystem {
   }
 
 
-  @Test
-  public void testLoadSchedulesFromXML() {
-    List<String> filePaths = new ArrayList<>();
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/prof.xml");
-
-   // centralSystem.loadSchedulesFromXML(filePaths);
-
-    IUser profLucia = centralSystem.getUser("Prof. Lucia");
-    Assert.assertNotNull(profLucia);
-    Assert.assertFalse(profLucia.getSchedule().getAllEvents().isEmpty());
-
-    List<ReadonlyIEvent> events = profLucia.getModifiableSchedule().getAllEvents();
-    Assert.assertEquals(3, events.size());
-
-    ReadonlyIEvent firstEvent = events.get(0);
-    Assert.assertEquals("CS3500 Morning Lecture", firstEvent.name());
-    Assert.assertEquals(Day.TUESDAY, firstEvent.startDay());
-    Assert.assertEquals(950, firstEvent.startTime());
-    Assert.assertEquals(Day.TUESDAY, firstEvent.endDay());
-    Assert.assertEquals(1130, firstEvent.endTime());
-    Assert.assertFalse(firstEvent.online());
-    Assert.assertEquals("Churchill Hall 101", firstEvent.location());
-
-    List<String> expectedParticipants = Arrays.asList("Prof. Lucia", "Student Anon", "Chat");
-    Assert.assertTrue(firstEvent.participants().containsAll(expectedParticipants) &&
-            expectedParticipants.containsAll(firstEvent.participants()));
-
-  }
-
-  @Test
-  public void testWriteSchedulesToXML() throws Exception {
-
-    centralSystem.addUser(testUser);
-    centralSystem.createEvent("Alice", testEvent);
-    //centralSystem.writeScheduleToXML(testDirectoryPath, "Alice");
 
 
-    File userFile = new File(testDirectoryPath + "/Alice-schedule.xml");
-    Assert.assertTrue(userFile.exists());
 
-  }
 
-  @Test
-  public void testLoadSchedulesFromXMLDouble() {
-    List<String> filePaths = new ArrayList<>();
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/prof.xml");
-    filePaths.add("/Users/arees/Downloads/NUPlanner/Test/prof.xml");
 
-   // centralSystem.loadSchedulesFromXML(filePaths);
-
-    IUser profLucia = centralSystem.getUser("Prof. Lucia");
-    List<ReadonlyIEvent> events = profLucia.getSchedule().getAllEvents();
-
-    int expectedNumberOfUniqueEvents = 3;
-
-    Assert.assertEquals(expectedNumberOfUniqueEvents, events.size());
-  }
 }

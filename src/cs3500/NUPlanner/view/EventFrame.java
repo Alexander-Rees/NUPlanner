@@ -3,13 +3,11 @@ package cs3500.NUPlanner.view;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.*;
 
 import cs3500.NUPlanner.controller.IFeatures;
-import cs3500.NUPlanner.model.IEvent;
 import cs3500.NUPlanner.model.ReadonlyIEvent;
 
 public class EventFrame extends JFrame implements IViewEventFrame {
@@ -29,12 +27,16 @@ public class EventFrame extends JFrame implements IViewEventFrame {
   private IFeatures controller;
   private JTextArea participantsTextArea;
   private ReadonlyIEvent event;
+  private ActionListener createEventListener;
+  private ActionListener modifyEventListener;
+  private ActionListener removeEventListener;
+
 
 
   public EventFrame() {
     this.setLayout(new BorderLayout(10, 10));
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    this.setSize(400, 600); // Adjust the size as needed
+    this.setSize(400, 600);
 
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -102,14 +104,28 @@ public class EventFrame extends JFrame implements IViewEventFrame {
   public void setController(IFeatures controller) {
     this.controller = controller;
 
-    createEventButton.addActionListener(e -> {
+    if (createEventListener != null) {
+      createEventButton.removeActionListener(createEventListener);
+    }
+    if (modifyEventListener != null) {
+      modifyEventButton.removeActionListener(modifyEventListener);
+    }
+    if (removeEventListener != null) {
+      removeEventButton.removeActionListener(removeEventListener);
+    }
+    createEventListener = e -> {
       controller.createEvent(getEventDetails());
       EventFrame.this.dispose();
-    });
-    modifyEventButton.addActionListener(e -> {controller.modifyEvent(this.event, getEventDetails());
-      EventFrame.this.dispose();});
-    removeEventButton.addActionListener(e -> {controller.removeEvent(this.event);
-      EventFrame.this.dispose();} );
+    };
+    createEventButton.addActionListener(createEventListener);
+
+    modifyEventListener = e -> controller.modifyEvent(this.event, getEventDetails());
+    EventFrame.this.dispose();
+    modifyEventButton.addActionListener(modifyEventListener);
+
+    removeEventListener = e -> {controller.removeEvent(this.event);
+      EventFrame.this.dispose();};
+    removeEventButton.addActionListener(removeEventListener);
 
   }
 

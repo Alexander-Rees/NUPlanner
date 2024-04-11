@@ -1,5 +1,6 @@
 package cs3500.NUPlanner.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import cs3500.NUPlanner.model.IEvent;
@@ -11,6 +12,7 @@ public interface IFeatures {
     void createEvent(Map<String, String> eventDetails);
     void modifyEvent(ReadonlyIEvent oldEvent, Map<String, String> eventDetails);
     void removeEvent(ReadonlyIEvent event);
-    void scheduleEvent();
+    void scheduleEvent(String name, String location, boolean isOnline, int duration, List<String> participants);
     void saveScheduleToXML(String selectedUser);
+
 }
